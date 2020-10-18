@@ -18,5 +18,8 @@
     "express": "^4.17.1",
     "progress": "^2.0.3",
     "yaml": "^1.10.0"
+  },
+  "devDependencies": {
+    "sync-glitch-cli": "^2.0.1"
   }
 }

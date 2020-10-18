@@ -9,6 +9,17 @@ const contributions = JSON.parse(fs.readFileSync('contributions.json').toString(
 const port = process.env.PORT || 5090
 app.listen(port, () => console.log(`Serving at http://localhost:${port}`))
 
+
+app.get('/', (req, res) => {
+  res.send({
+    message: "🌈🚂🚅",
+    endpoints: [
+      "/cc/random/:count?",
+      "/cc/:index"
+    ]
+  })
+})
+
 app.get('/cc/random/:count?', (req, res) => {
   const cons = []
   let count = req.params.count || 1
