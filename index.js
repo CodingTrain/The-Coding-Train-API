@@ -2,6 +2,8 @@ const fs = require('fs')
 const express = require('express')
 const app = express();
 
+const { getAllChallenges, getCodingChallenge } = require('./data-source')
+
 const contributions = JSON.parse(fs.readFileSync('contributions.json').toString())
 
 const port = process.env.PORT || 5090
@@ -14,6 +16,17 @@ app.get('/cc/random/:count?', (req, res) => {
     cons.push(randomContribution())
   }
   res.send(count == 1 ? cons[0] : cons)
+})
+
+app.get('/cc/:index', async (req, res) => {
+  const i = +req.params.index
+  const data = await getCodingChallenge(i)
+  if (typeof data !== "object") res.send({ status: "error" })
+  else {
+    if (data.contributions) res.send(data.contributions)
+    else if (Math.floor(i) == i) res.send([])
+    else res.send((await getCodingChallenge(Math.floor(i) + 0.1)).contributions)
+  }
 })
 
 const randomContribution = () => {
