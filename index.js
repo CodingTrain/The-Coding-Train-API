@@ -33,12 +33,28 @@ app.get('/challenge/:index', async (req, res) => {
   if (typeof data !== "object") res.send({ status: "error" })
   else {
     const { redirect_from, repository, video_number, links, video_id, web_editor, ...challenge } = data
-    res.send({
+    if (challenge.contributions) res.send({
       ...challenge,
       challengeIndex: video_number,
       referenceLinks: links,
       videoID: video_id,
       webEditor: web_editor
+    })
+    else if (Math.floor(i) == i) res.send({
+      ...challenge,
+      challengeIndex: video_number,
+      referenceLinks: links,
+      videoID: video_id,
+      webEditor: web_editor,
+      contributions: []
+    })
+    else res.send({
+      ...challenge,
+      challengeIndex: video_number,
+      referenceLinks: links,
+      videoID: video_id,
+      webEditor: web_editor,
+      contributions: (await getCodingChallenge(Math.floor(i) + 0.1)).contributions
     })
   }
 })
