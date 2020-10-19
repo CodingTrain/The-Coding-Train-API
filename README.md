@@ -1,45 +1,64 @@
-# Express API Starter
+# The Coding Train API
 
-Includes API Server utilities:
+(Unofficial) API for the Coding Train
 
-* [morgan](https://www.npmjs.com/package/morgan)
-  * HTTP request logger middleware for node.js
-* [helmet](https://www.npmjs.com/package/helmet)
-  * Helmet helps you secure your Express apps by setting various HTTP headers. It's not a silver bullet, but it can help!
-* [dotenv](https://www.npmjs.com/package/dotenv)
-  * Dotenv is a zero-dependency module that loads environment variables from a `.env` file into `process.env`
+Response Type: `application/json`
 
-Development utilities:
+## Endpoints:
+- `/challenge/contribution`: Responds with a random community contribution on a coding challenge
+- `/challenge/:index`: Responds with a particular Coding Challenge
+  - `index`: Coding Challenge index
+- `/cabana/contribution`: Responds with a random community contribution on a Coding in the Cabana challenge
+- `/cabana/:index`: Responds with a particular Cabana Challenge
+  - `index`: Coding in the Cabana index
 
-* [nodemon](https://www.npmjs.com/package/nodemon)
-  * nodemon is a tool that helps develop node.js based applications by automatically restarting the node application when file changes in the directory are detected.
-* [eslint](https://www.npmjs.com/package/eslint)
-  * ESLint is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
-* [mocha](https://www.npmjs.com/package/mocha)
-  * ☕️ Simple, flexible, fun JavaScript test framework for Node.js & The Browser ☕️
-* [supertest](https://www.npmjs.com/package/supertest)
-  * HTTP assertions made easy via superagent.
-
-## Setup
-
+**Example**: 
+```bash
+GET /challenge/contribution
 ```
-npm install
-```
-
-## Lint
-
-```
-npm run lint
-```
-
-## Test
-
-```
-npm run test
+```jsonc
+{
+  "title": "Contribution Title",
+  "author": {
+    "name": "Author Name",
+    "url": "https://github.com/username"
+  },
+  "url": "Contribution Link",
+  "source": "Source Code",
+  "challenge": {
+    "name": "Original Challenge Title",
+    "index": 2, // Original Challenge index
+    "url": "Original Challenge URL"
+  }
+}
 ```
 
-## Development
 
+**Example**: 
+```bash
+GET /challenge/3
 ```
-npm run dev
+```jsonc
+{
+  "title": "Snake Game",
+  "date": "2016-05-02",
+  "parts": [
+    // different parts of the challenge
+  ],
+  "webURL": "CodingChallenges/abcdef",
+  "challengeIndex": 3,
+  "contributions": [],
+  "referenceLinks": [],
+  "videoID": "D8UgRyRnvXU",
+  "webEditor": "EBkm4txSA"
+}
 ```
+
+### (WiP, Suggest Improvements!)
+
+## Contributing
+This repo is open to Pull Requests.
+
+## License
+MIT
+
