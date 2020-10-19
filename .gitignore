@@ -71,3 +71,6 @@ typings/
 
 # Serverless directories
 .serverless
+
+# vercel config files
+.vercel
