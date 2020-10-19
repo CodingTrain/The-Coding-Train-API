@@ -5,16 +5,11 @@
 Response Type: `application/json`
 
 ## Endpoints:
-- `/challenge/contribution`: Responds with a random community contribution on a coding challenge
-- `/challenge/:index`: Responds with a particular Coding Challenge
-  - `index`: Coding Challenge index
-- `/cabana/contribution`: Responds with a random community contribution on a Coding in the Cabana challenge
-- `/cabana/:index`: Responds with a particular Cabana Challenge
-  - `index`: Coding in the Cabana index
+
 
 **Example**: 
 ```bash
-GET /challenge/contribution
+GET /challenge/randomContribution
 ```
 ```jsonc
 {
