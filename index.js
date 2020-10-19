@@ -38,16 +38,16 @@ app.get('/challenge/:index', async (req, res) => {
   const data = await getCodingChallenge(i)
   if (typeof data !== "object") res.send({ status: "error" })
   else {
-    const { redirect_from, repository, video_number, links, video_id, web_editor, ...challenge } = data
+    const { redirect_from, repository, videos, video_number, links, video_id, videos, web_editor, ...challenge } = data
     let contributions;
     if (challenge.contributions) contributions = challenge.contributions
     else if (Math.floor(i) == i) contributions = []
     else contributions = (await getCodingChallenge(Math.floor(i) + 0.1)).contributions
-
     res.send({
       ...challenge,
       challengeIndex: video_number,
       referenceLinks: links,
+      referenceVideos: videos,
       videoID: video_id,
       webEditor: web_editor,
       contributions,
@@ -61,11 +61,12 @@ app.get('/cabana/:index', async (req, res) => {
   const data = await getCabanaChallenge(i)
   if (typeof data !== "object") res.send({ status: "error" })
   else {
-    const { redirect_from, repository, video_number, links, video_id, web_editor, ...challenge } = data
+    const { redirect_from, repository, video_number, links, videos, video_id, web_editor, ...challenge } = data
     res.send({
       ...challenge,
       challengeIndex: video_number,
       referenceLinks: links,
+      referenceVideos: videos,
       videoID: video_id,
       webEditor: web_editor,
       challengeType: "Coding In the Cabana"
@@ -79,7 +80,6 @@ const randomContribution = async (type) => {
     case "challenge": getAll = getAllCodingChallenges; getOne = getCodingChallenge; break;
     case "cabana": getAll = getAllCabanaChallenges; getOne = getCabanaChallenge; break;
   }
-
   const data = await getAll();
   let challengeIndex = Object.keys(data)[Math.floor(Math.random() * Object.keys(data).length)]
   const challenge = await getOne(challengeIndex)

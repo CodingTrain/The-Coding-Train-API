@@ -1,11 +1,10 @@
 {
-  "name": "coding-train-scraper",
+  "name": "the-coding-train-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "private": "true",
   "scripts": {
-    "test": "echo Test",
     "start": "node index.js",
     "update": "node update.js"
   },
@@ -18,8 +17,5 @@
     "express": "^4.17.1",
     "progress": "^2.0.3",
     "yaml": "^1.10.0"
-  },
-  "devDependencies": {
-    "sync-glitch-cli": "^2.0.1"
   }
 }
