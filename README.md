@@ -6,13 +6,17 @@ Response Type: `application/json`
 
 ## Endpoints:
 - `/challenge/contribution`: Responds with a random community contribution on a coding challenge
-  - `count`: number of responses (default=1)
+- `/challenge/:index`: Responds with a particular Coding Challenge
+  - `index`: Coding Challenge index
+- `/cabana/contribution`: Responds with a random community contribution on a Coding in the Cabana challenge
+- `/cabana/:index`: Responds with a particular Cabana Challenge
+  - `index`: Coding in the Cabana index
 
 **Example**: 
 ```bash
 GET /challenge/contribution
 ```
-```json
+```jsonc
 {
   "title": "Contribution Title",
   "author": {
@@ -29,22 +33,20 @@ GET /challenge/contribution
 }
 ```
 
-- `/challenge/:index`: Responds with a particular Coding Challenge
-  - `index`: Coding Challenge index
 
 **Example**: 
 ```bash
-GET /challenge/10.2
+GET /challenge/3
 ```
-```json
+```jsonc
 {
-  "title": "Maze Generator with p5.js - Part 2",
+  "title": "Snake Game",
   "date": "2016-05-02",
   "parts": [
     // different parts of the challenge
   ],
-  "webURL": "CodingChallenges/010.2-maze-dfs-p5.html",
-  "challengeIndex": 10.2,
+  "webURL": "CodingChallenges/abcdef",
+  "challengeIndex": 3,
   "contributions": [],
   "referenceLinks": [],
   "videoID": "D8UgRyRnvXU",

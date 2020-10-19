@@ -1,6 +1,6 @@
 
 const fs = require("fs")
-const { getAllChallenges, getCodingChallenge } = require('./data-source')
+const { getAllCodingChallenges, getCodingChallenge } = require('./data-source')
 const ProgressBar = require('progress');
 
 
@@ -8,7 +8,7 @@ const main = async () => {
   const contributions = []
 
   console.log("Starting Update...")
-  let all = await getAllChallenges()
+  let all = await getAllCodingChallenges()
   const bar = new ProgressBar(':bar :percent :etas', { total: all.length });
   for (let i = 0; i < all.length; i++) {
     bar.tick();

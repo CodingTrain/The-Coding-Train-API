@@ -2,7 +2,7 @@ const fs = require('fs')
 const express = require('express')
 const app = express();
 
-const { getAllChallenges, getCodingChallenge } = require('./data-source')
+const { getAllCodingChallenges, getCodingChallenge, getCabanaChallenge, getAllCabanaChallenges } = require('./data-source');
 
 // const contributions = JSON.parse(fs.readFileSync('contributions.json').toString())
 
@@ -17,13 +17,19 @@ app.get('/', (req, res) => {
     message: "🌈🚂🚅",
     endpoints: [
       "/challenge/contribution",
-      "/challenge/:index"
+      "/challenge/:index",
+      "/cabana/contribution"
     ]
   })
 })
 
 app.get('/challenge/contribution', async (req, res) => {
-  let h = await randomContribution()
+  let h = await randomContribution("challenge")
+  res.send(h)
+})
+
+app.get('/cabana/contribution', async (req, res) => {
+  let h = await randomContribution("cabana");
   res.send(h)
 })
 
@@ -33,36 +39,50 @@ app.get('/challenge/:index', async (req, res) => {
   if (typeof data !== "object") res.send({ status: "error" })
   else {
     const { redirect_from, repository, video_number, links, video_id, web_editor, ...challenge } = data
-    if (challenge.contributions) res.send({
-      ...challenge,
-      challengeIndex: video_number,
-      referenceLinks: links,
-      videoID: video_id,
-      webEditor: web_editor
-    })
-    else if (Math.floor(i) == i) res.send({
-      ...challenge,
-      challengeIndex: video_number,
-      referenceLinks: links,
-      videoID: video_id,
-      webEditor: web_editor,
-      contributions: []
-    })
-    else res.send({
+    let contributions;
+    if (challenge.contributions) contributions = challenge.contributions
+    else if (Math.floor(i) == i) contributions = []
+    else contributions = (await getCodingChallenge(Math.floor(i) + 0.1)).contributions
+
+    res.send({
       ...challenge,
       challengeIndex: video_number,
       referenceLinks: links,
       videoID: video_id,
       webEditor: web_editor,
-      contributions: (await getCodingChallenge(Math.floor(i) + 0.1)).contributions
+      contributions,
+      challengeType: "Coding Challenge"
     })
   }
 })
 
-const randomContribution = async () => {
-  const data = await getAllChallenges();
+app.get('/cabana/:index', async (req, res) => {
+  const i = +req.params.index
+  const data = await getCabanaChallenge(i)
+  if (typeof data !== "object") res.send({ status: "error" })
+  else {
+    const { redirect_from, repository, video_number, links, video_id, web_editor, ...challenge } = data
+    res.send({
+      ...challenge,
+      challengeIndex: video_number,
+      referenceLinks: links,
+      videoID: video_id,
+      webEditor: web_editor,
+      challengeType: "Coding In the Cabana"
+    })
+  }
+})
+
+const randomContribution = async (type) => {
+  let getAll, getOne;
+  switch (type) {
+    case "challenge": getAll = getAllCodingChallenges; getOne = getCodingChallenge; break;
+    case "cabana": getAll = getAllCabanaChallenges; getOne = getCabanaChallenge; break;
+  }
+
+  const data = await getAll();
   let challengeIndex = Object.keys(data)[Math.floor(Math.random() * Object.keys(data).length)]
-  const challenge = await getCodingChallenge(challengeIndex)
+  const challenge = await getOne(challengeIndex)
   if (typeof challenge !== "object") return { status: "error" }
   else {
     if (challenge.contributions) return {
