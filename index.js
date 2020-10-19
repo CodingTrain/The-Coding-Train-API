@@ -4,7 +4,9 @@ const app = express();
 
 const { getAllChallenges, getCodingChallenge } = require('./data-source')
 
-const contributions = JSON.parse(fs.readFileSync('contributions.json').toString())
+// const contributions = JSON.parse(fs.readFileSync('contributions.json').toString())
+
+const baseURL = "https://thecodingtrain.com/"
 
 const port = process.env.PORT || 5090
 app.listen(port, () => console.log(`Serving at http://localhost:${port}`))
@@ -14,32 +16,48 @@ app.get('/', (req, res) => {
   res.send({
     message: "🌈🚂🚅",
     endpoints: [
-      "/cc/random/:count?",
-      "/cc/:index"
+      "/challenge/contribution",
+      "/challenge/:index"
     ]
   })
 })
 
-app.get('/cc/random/:count?', (req, res) => {
-  const cons = []
-  let count = req.params.count || 1
-  for (let i = 0; i < count; i++) {
-    cons.push(randomContribution())
-  }
-  res.send(count == 1 ? cons[0] : cons)
+app.get('/challenge/contribution', async (req, res) => {
+  let h = await randomContribution()
+  res.send(h)
 })
 
-app.get('/cc/:index', async (req, res) => {
+app.get('/challenge/:index', async (req, res) => {
   const i = +req.params.index
   const data = await getCodingChallenge(i)
   if (typeof data !== "object") res.send({ status: "error" })
   else {
-    if (data.contributions) res.send(data.contributions)
-    else if (Math.floor(i) == i) res.send([])
-    else res.send((await getCodingChallenge(Math.floor(i) + 0.1)).contributions)
+    const { redirect_from, repository, video_number, links, video_id, web_editor, ...challenge } = data
+    res.send({
+      ...challenge,
+      challengeIndex: video_number,
+      referenceLinks: links,
+      videoID: video_id,
+      webEditor: web_editor
+    })
   }
 })
 
-const randomContribution = () => {
-  return contributions[Math.floor(Math.random() * contributions.length)]
+const randomContribution = async () => {
+  const data = await getAllChallenges();
+  let challengeIndex = Object.keys(data)[Math.floor(Math.random() * Object.keys(data).length)]
+  const challenge = await getCodingChallenge(challengeIndex)
+  if (typeof challenge !== "object") return { status: "error" }
+  else {
+    if (challenge.contributions) return {
+      ...randomArr(challenge.contributions),
+      challenge: { name: challenge.title, index: challenge.video_number, url: baseURL + challenge.webURL }
+    }
+    else if (Math.floor(challengeIndex) == challengeIndex) return await randomContribution()
+    else return {
+      ...randomArr((await getCodingChallenge(Math.floor(challengeIndex) + 0.1)).contributions),
+      challenge: { name: challenge.title, index: challenge.video_number, url: baseURL + challenge.webURL }
+    }
+  }
 }
+const randomArr = items => items[Math.floor(Math.random() * items.length)];

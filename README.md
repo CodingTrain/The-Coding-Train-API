@@ -1,6 +1,6 @@
-# Coding Train Community Contributions API
+# The Coding Train API
 
-API for the Coding Train Coding Challenges Community Contributions
+(Unofficial) API for the Coding Train
 
 Response Type: `application/json`
 

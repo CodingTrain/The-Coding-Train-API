@@ -23,7 +23,7 @@ async function getCodingChallenge(i) {
     let { data } = await axios.get(url)
     let contributionsYaml = data.split('---')[1];
     let contributions = YAML.parse(contributionsYaml)
-    return contributions
+    return { ...contributions, webURL: "CodingChallenges/" + url.split("/").pop().slice(0, -2) + "html" }
   } catch {
     return "error"
   }
