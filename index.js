@@ -38,7 +38,7 @@ app.get('/challenge/:index', async (req, res) => {
   const data = await getCodingChallenge(i)
   if (typeof data !== "object") res.send({ status: "error" })
   else {
-    const { redirect_from, repository, videos, video_number, links, video_id, videos, web_editor, ...challenge } = data
+    const { redirect_from, repository, video_number, links, video_id, videos, web_editor, ...challenge } = data
     let contributions;
     if (challenge.contributions) contributions = challenge.contributions
     else if (Math.floor(i) == i) contributions = []
