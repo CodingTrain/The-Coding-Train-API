@@ -69,6 +69,7 @@ const dyna = {
 const randomArr = arr => arr[Math.floor(Math.random() * arr.length)]
 
 async function getAll(content) {
+  if (!dyna[content]) return "error"
   let url = dyna[content].apiUrl;
 
   let { data: challenges } = await axios.get(url, {
