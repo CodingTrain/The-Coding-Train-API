@@ -19,7 +19,8 @@ const contributing = [
   "p5Tutorial",
   "challenge",
   "cabana",
-  "guest"
+  "ml5",
+  "noc"
 ]
 
 app.get('/', (req, res) => {
@@ -27,15 +28,10 @@ app.get('/', (req, res) => {
   res.send({
     message: "Hello! And Welcome to the Coding Train!",
     mainEndpoint: reqURL + ":videoSeriesName{/:videoIndex}",
-    videoSeries: {
-      "Coding Challenges": reqURL + "challenge",
-      "Coding in the Cabana": reqURL + "cabana",
-      "Code! Programming with p5.js": reqURL + "p5Tutorial",
-      "Git and Github for Poets": reqURL + "gitTutorial",
-      "Working with Data and APIs in JavaScript": reqURL + "dataapis",
-      "Teachable Machine": reqURL + "teachableMachine",
-      "Guest Tutorials": reqURL + "guest"
-    }
+    videoSeries: Object.fromEntries(Object.keys(dyna).reduce((acc, elt, i) => {
+      acc.push([dyna[elt].title, reqURL + elt])
+      return acc
+    }, []))
   })
 })
 
@@ -47,6 +43,7 @@ app.get('/:videoSeries', async (req, res, next) => {
   res.send({
     title: dyna[type].title,
     description: dyna[type].description,
+    playlistID: dyna[type].ytid,
     videos: videos.map(elt => ({
       name: titleCase(elt.name.split('-').join(' ')),
       videoIndex: elt.videoIndex,
@@ -58,8 +55,9 @@ app.get('/:videoSeries', async (req, res, next) => {
 
 app.get('/:resourceType/randomContribution', async (req, res, next) => {
   const type = req.params.resourceType
+  let baseURL = `${req.protocol}://${req.get('host')}`;
   if (!contributing.includes(type)) next();
-  let h = await randomContribution(type)
+  let h = await randomContribution(type, baseURL)
   if (typeof h == 'object') res.send(h)
   else next()
 })

@@ -9,13 +9,15 @@ const dyna = {
     apiUrl: 'https://api.github.com/repos/CodingTrain/website/contents/_CodingChallenges',
     webURLPre: `${baseURL}/CodingChallenges/`,
     title: "Coding Challenge",
-    description: "Watch Dan take on some viewer submitted Coding Challenges in p5.js and Processing!"
+    description: "Watch Dan take on some viewer submitted Coding Challenges in p5.js and Processing!",
+    ytid: "PLRqwX-V7Uu6ZiZxtDDRCi6uhfTH4FilpH"
   },
   cabana: {
     apiUrl: 'https://api.github.com/repos/CodingTrain/website/contents/_challenges/coding-in-the-cabana',
     webURLPre: `${baseURL}/challenges/coding-in-the-cabana/`,
     title: "Coding in the Cabana",
-    description: "The sun out is, the birds are chirping, it’s a beautiful day to code a generative algorithm. Choo choo!"
+    description: "The sun out is, the birds are chirping, it’s a beautiful day to code a generative algorithm. Choo choo!",
+    ytid: "PLRqwX-V7Uu6bVafiIHN-8LR3MUFDboJdU"
   },
   p5Tutorial: {
     apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_beginners/p5js",
@@ -33,7 +35,14 @@ const dyna = {
     apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_Courses/data-and-apis",
     title: "Working with Data and APIs in JavaScript",
     webURLPre: `${baseURL}/Courses/data-and-apis/`,
-    description: "Welcome to Working with Data and APIs in Javascript!"
+    description: "Welcome to Working with Data and APIs in Javascript!",
+    ytid: "PLRqwX-V7Uu6YxDKpFzf_2D84p0cyk4T7X"
+  },
+  noc: {
+    apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_learning/nature-of-code",
+    webURLPre: `${baseURL}/learning/nature-of-code/`,
+    title: "The Nature of Code",
+    description: "These videos accompany The Nature of Code book."
   },
   guest: {
     apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_GuestTutorials",
@@ -45,7 +54,15 @@ const dyna = {
     apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_TeachableMachine",
     webURLPre: `${baseURL}/TeachableMachine/`,
     title: "The Teachable Machine",
-    description: "Introducing Teachable Machine 2.0 from Google Creative Lab! Train a computer to recognize your own images, sounds & poses."
+    description: "Introducing Teachable Machine 2.0 from Google Creative Lab! Train a computer to recognize your own images, sounds & poses.",
+    ytid: "PLRqwX-V7Uu6aJwX0rFP-7ccA6ivsPDsK5"
+  },
+  ml5: {
+    apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_learning/ml5",
+    webURLPre: `${baseURL}/learning/ml5`,
+    title: "Beginners Guide to Machine Learning in JavaScript",
+    description: "ml5.js Beginners Guide",
+    ytid: "PLRqwX-V7Uu6YPSwT06y_AEYTqIwbeam3y"
   }
 }
 
@@ -102,7 +119,7 @@ async function getAllData(content) {
   return newObj
 }
 
-const randomContribution = async (type) => {
+const randomContribution = async (type, baseURL) => {
   const data = await getAll(type);
   let challengeIndex = randomArr(Object.keys(data))
   const challenge = await getOne(type, challengeIndex)
@@ -112,20 +129,21 @@ const randomContribution = async (type) => {
       name: challenge.title,
       index: challenge.video_number,
       url: challenge.webURL,
+      apiUrl: baseURL + '/' + type + '/' + challenge.video_number,
       series: dyna[type].title
     }
     if (challenge.contributions && typeof challenge.contributions == 'object') return {
       ...randomArr(challenge.contributions),
-      challenge: challengeRes
+      originalVideo: challengeRes
     }
-    else if (Math.floor(challengeIndex) == challengeIndex) return await randomContribution(type)
+    else if (Math.floor(challengeIndex) == challengeIndex) return await randomContribution(type, baseURL)
     else {
       const pt1 = await getOne(type, Math.floor(challengeIndex) + 0.1);
       if (pt1.contributions) return {
         ...randomArr(pt1.contributions),
-        challenge: challengeRes
+        originalVideo: challengeRes
       }
-      else return randomContribution(type)
+      else return randomContribution(type, baseURL)
     }
   }
 }
