@@ -72,9 +72,11 @@ async function getAll(content) {
   if (!dyna[content]) return "error"
   let url = dyna[content].apiUrl;
 
-  let { data: challenges } = await axios.get(url, {
-    auth: { username: process.env.GITHUB_USERNAME, password: process.env.GITHUB_PASSWORD }
-  })
+  let { data: challenges } = await axios.get(url,
+    //    {
+    //   auth: { username: process.env.GITHUB_USERNAME, password: process.env.GITHUB_PASSWORD }
+    // }
+  )
   challenges = challenges.filter(x => x.name !== 'index.md')
   let challengesWithIndex = {}
   for (let ch of challenges) {
@@ -95,7 +97,7 @@ async function getOne(content, i) {
     const all = await getAll(content)
     let { url } = all[i]
     let { data } = await axios.get(url, {
-      auth: { username: process.env.GITHUB_USERNAME, password: process.env.GITHUB_PASSWORD }
+      // auth: { username: process.env.GITHUB_USERNAME, password: process.env.GITHUB_PASSWORD }
     })
     let challengeYaml = data.split('---')[1];
     let description = data.split('---').pop();
