@@ -5,7 +5,6 @@ const cors = require('cors');
 
 require('dotenv').config();
 
-const middlewares = require('./middlewares');
 const app = express();
 
 app.use(morgan('dev'));
@@ -14,12 +13,8 @@ app.use(cors());
 app.use(express.json());
 
 
-const { getOne, randomContribution } = require('./functions')
+const { getOne, randomContribution, typeList } = require('./functions')
 
-const typeList = {
-  challenge: "Coding Challenge",
-  cabana: "Coding in the Cabana"
-}
 
 app.get('/', (req, res) => {
   res.send({
@@ -30,6 +25,21 @@ app.get('/', (req, res) => {
       "/cabana/randomContribution"
     ]
   })
+})
+
+const contributing = [
+  "p5Tutorial",
+  "challenge",
+  "cabana",
+  "guest"
+]
+
+app.get('/:resourceType/randomContribution', async (req, res, next) => {
+  const type = req.params.resourceType
+  if (!contributing.includes(type)) next();
+  let h = await randomContribution(type)
+  if (typeof h == 'object') res.send(h)
+  else next()
 })
 
 app.get('/:resourceType/:index', async (req, res, next) => {
@@ -47,24 +57,15 @@ app.get('/:resourceType/:index', async (req, res, next) => {
     else contributions = (await getOne(type, Math.floor(i) + 0.1)).contributions
     res.send({
       ...challenge,
-      challengeIndex: video_number,
+      videoIndex: video_number,
       referenceLinks: links,
       referenceVideos: videos,
       videoID: video_id,
       webEditor: web_editor,
       contributions,
-      type: typeList[type]
+      series: typeList[type]
     })
   }
 })
-
-app.get('/:resourceType/randomContribution', async (req, res, next) => {
-  const type = req.params.resourceType
-  if (!Object.keys(typeList).includes(type)) next();
-  res.send(await randomContribution(type))
-})
-
-app.use(middlewares.notFound);
-app.use(middlewares.errorHandler);
 
 module.exports = app
