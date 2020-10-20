@@ -27,11 +27,9 @@ app.get('/', (req, res) => {
   let reqURL = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
   res.send({
     message: "Hello! And Welcome to the Coding Train!",
-    mainEndpoint: reqURL + ":videoSeriesName{/:videoIndex}",
-    videoSeries: Object.fromEntries(Object.keys(dyna).reduce((acc, elt, i) => {
-      acc.push([dyna[elt].title, reqURL + elt])
-      return acc
-    }, []))
+    videoSeries: Object.fromEntries(Object.keys(dyna).map(elt =>
+      [dyna[elt].title, reqURL + elt]
+    ))
   })
 })
 
