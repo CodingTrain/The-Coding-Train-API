@@ -63,7 +63,6 @@ app.get('/:resourceType/randomContribution', async (req, res, next) => {
 app.get('/:resourceType/:index', async (req, res, next) => {
   const type = req.params.resourceType
   const i = +req.params.index
-  console.log(type, i)
   if (!Object.keys(dyna).includes(type)) next();
   if (typeof i !== 'number') next();
   const data = await getOne(type, i)
