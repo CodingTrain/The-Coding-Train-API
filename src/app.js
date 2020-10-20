@@ -33,9 +33,14 @@ app.get('/', (req, res) => {
   })
 })
 
+app.get("/secret", (req, res) => {
+  res.send("You Found the Secret Route! 🚂🚂")
+})
+
 app.get('/:videoSeries', async (req, res, next) => {
   const type = req.params.videoSeries
   if (!Object.keys(dyna).includes(type)) next();
+  console.log("HEHEE")
   let reqURL = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
   let videos = Object.values(await getAll(type))
   res.send({
