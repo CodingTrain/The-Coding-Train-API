@@ -7,39 +7,47 @@ const baseURL = "https://thecodingtrain.com"
 const dyna = {
   challenge: {
     apiUrl: 'https://api.github.com/repos/CodingTrain/website/contents/_CodingChallenges',
-    webURLPre: `${baseURL}/CodingChallenges/`
+    webURLPre: `${baseURL}/CodingChallenges/`,
+    title: "Coding Challenge",
+    description: "Watch Dan take on some viewer submitted Coding Challenges in p5.js and Processing!"
   },
   cabana: {
     apiUrl: 'https://api.github.com/repos/CodingTrain/website/contents/_challenges/coding-in-the-cabana',
-    webURLPre: `${baseURL}/challenges/coding-in-the-cabana/`
+    webURLPre: `${baseURL}/challenges/coding-in-the-cabana/`,
+    title: "Coding in the Cabana",
+    description: "The sun out is, the birds are chirping, it’s a beautiful day to code a generative algorithm. Choo choo!"
   },
   p5Tutorial: {
     apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_beginners/p5js",
-    webURLPre: `${baseURL}/beginners/p5js/`
+    webURLPre: `${baseURL}/beginners/p5js/`,
+    title: "Code! Programming in p5.js",
+    description: "This video series focuses on the fundamentals of computer programming (variables, conditionals, iteration, functions & objects) using JavaScript. In particular it leverages the p5.js creative computing environment which is oriented towards visual displays on desktops, laptops, tablets or smartphones. The series is designed for computer programming novices."
   },
   gitTutorial: {
     apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_beginners/git-and-github",
-    webURLPre: `${baseURL}/beginners/git-and-github/`
+    webURLPre: `${baseURL}/beginners/git-and-github/`,
+    title: "Git and Github for poets",
+    description: "This video series is designed to teach you the basics of working with git version control and the GitHub website."
   },
   dataapis: {
     apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_Courses/data-and-apis",
-    webURLPre: `${baseURL}/Courses/data-and-apis/`
+    title: "Working with Data and APIs in JavaScript",
+    webURLPre: `${baseURL}/Courses/data-and-apis/`,
+    description: "Welcome to Working with Data and APIs in Javascript!"
   },
   guest: {
     apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_GuestTutorials",
-    webURLPre: `${baseURL}/GuestTutorials/`
+    webURLPre: `${baseURL}/GuestTutorials/`,
+    title: "Guest Tutorials",
+    description: "Here you can find all tutorials made by guests on TheCodingTrain."
+  },
+  teachableMachine: {
+    apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_TeachableMachine",
+    webURLPre: `${baseURL}/TeachableMachine/`,
+    title: "The Teachable Machine",
+    description: "Introducing Teachable Machine 2.0 from Google Creative Lab! Train a computer to recognize your own images, sounds & poses."
   }
 }
-
-const typeList = {
-  challenge: "Coding Challenge",
-  cabana: "Coding in the Cabana",
-  p5Tutorial: "Code! Programming with p5.js",
-  gitTutorial: "Git and Github for Poets",
-  dataapis: "Working with Data and APIs in JavaScript",
-  guest: "Guest Tutorials"
-}
-
 
 const randomArr = arr => arr[Math.floor(Math.random() * arr.length)]
 
@@ -50,11 +58,12 @@ async function getAll(content) {
     auth: { username: process.env.GITHUB_USERNAME, password: process.env.GITHUB_PASSWORD }
   })
   challenges = challenges.filter(x => x.name !== 'index.md')
-  let challengesWithIndex = []
+  let challengesWithIndex = {}
   for (let ch of challenges) {
     challengesWithIndex[+ch.name.match(/\d+[.\d]*/)[0]] = {
-      name: ch.name.slice(4, -3),
-      url: ch.download_url
+      name: ch.name.slice(0, -3),
+      url: ch.download_url,
+      videoIndex: +ch.name.match(/\d+[.\d]*/)[0]
     }
   }
   return challengesWithIndex
@@ -79,6 +88,20 @@ async function getOne(content, i) {
   }
 }
 
+
+async function getAllData(content) {
+  let newObj = [];
+  let oldObj = await getAll(content);
+  for (let i = 1; i <= Object.keys(oldObj).length; i++) {
+    let x = await getOne(content, i)
+    newObj.push({
+      index: x.video_number,
+      name: x.title,
+    })
+  }
+  return newObj
+}
+
 const randomContribution = async (type) => {
   const data = await getAll(type);
   let challengeIndex = randomArr(Object.keys(data))
@@ -89,7 +112,7 @@ const randomContribution = async (type) => {
       name: challenge.title,
       index: challenge.video_number,
       url: challenge.webURL,
-      series: typeList[type]
+      series: dyna[type].title
     }
     if (challenge.contributions && typeof challenge.contributions == 'object') return {
       ...randomArr(challenge.contributions),
@@ -108,4 +131,4 @@ const randomContribution = async (type) => {
 }
 
 
-module.exports = { getAll, getOne, randomContribution, typeList }
+module.exports = { getAll, getOne, getAllData, randomContribution, dyna }

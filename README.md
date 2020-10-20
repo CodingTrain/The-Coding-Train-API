@@ -6,53 +6,30 @@ Response Type: `application/json`
 
 ## Endpoints:
 
+All endpoints are relative to [`https://the-coding-train-api.vercel.app`](https://the-coding-train-api.vercel.app)
 
-**Example**: 
-```bash
-GET /challenge/randomContribution
-```
-```jsonc
-{
-  "title": "Contribution Title",
-  "author": {
-    "name": "Author Name",
-    "url": "https://github.com/username"
-  },
-  "url": "Contribution Link",
-  "source": "Source Code",
-  "challenge": {
-    "name": "Original Challenge Title",
-    "index": 2, // Original Challenge index
-    "url": "Original Challenge URL"
-  }
-}
-```
+* `/` : Details about the API and other endpoints
+* `/:videoplaylist{/:videoIndex}` : Data about particular playlist (or video)
+
+| Actual Name                              | `videoplalist`     |
+| ---------------------------------------- | ------------------ |
+| Coding Challenges                        | `challenge`        |
+| Coding in the Cabana                     | `cabana`           |
+| Code! Programming with p5.js             | `p5Tutorial`       |
+| Git and Github for Poets                 | `gitTutorial`      |
+| Working with Data and APIs in JavaScript | `dataapis`         |
+| Teachable Machine Tutorials              | `teachableMachine` |
+| Guest Tutorials                          | `guest`            |
+
+* `/challenge/randomContribution` : Random Contribution for a Coding Challenge
+* `/cabana/randomContribution` : Random Contribution for a Coding in the Cabana Video
+* `/p5Tutorial/randomContribution` : Random Contribution based on p5.js Tutorials video
 
 
-**Example**: 
-```bash
-GET /challenge/3
-```
-```jsonc
-{
-  "title": "Snake Game",
-  "date": "2016-05-02",
-  "parts": [
-    // different parts of the challenge
-  ],
-  "webURL": "CodingChallenges/abcdef",
-  "challengeIndex": 3,
-  "contributions": [],
-  "referenceLinks": [],
-  "videoID": "D8UgRyRnvXU",
-  "webEditor": "EBkm4txSA"
-}
-```
+## Contribution
+If any issue (eg. wrong response, etc) is found, please feel free to [create a new github issue](/issues).
 
-### (WiP, Suggest Improvements!)
-
-## Contributing
-This repo is open to Pull Requests.
+You can also contribute to the project by [opening a pull request.](/pulls)
 
 ## License
 MIT
