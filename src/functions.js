@@ -93,11 +93,17 @@ async function getOne(content, i) {
   try {
     const all = await getAll(content)
     let { url } = all[i]
+    console.log(url)
     let { data } = await axios.get(url, {
       auth: { username: process.env.GITHUB_USERNAME, password: process.env.GITHUB_PASSWORD }
     })
     let challengeYaml = data.split('---')[1];
-    let description = YAML.parse(data.split('---').pop());
+    let description
+    try {
+      description = YAML.parse(data.split('---').pop());
+    } catch {
+      description = ""
+    }
     let challenge = YAML.parse(challengeYaml)
     return { ...challenge, description, webURL: `${webURLPre}${url.split("/").pop().slice(0, -2)}html` }
   } catch (e) {
