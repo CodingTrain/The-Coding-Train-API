@@ -40,7 +40,6 @@ app.get("/secret", (req, res) => {
 app.get('/:videoSeries', async (req, res, next) => {
   const type = req.params.videoSeries
   if (!Object.keys(dyna).includes(type)) next();
-  console.log("HEHEE")
   let reqURL = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
   let videos = Object.values(await getAll(type))
   res.send({
@@ -49,7 +48,7 @@ app.get('/:videoSeries', async (req, res, next) => {
     playlistID: dyna[type].ytid,
     videos: videos.map(elt => ({
       name: titleCase(elt.name.split('-').join(' ')),
-      videoIndex: elt.videoIndex,
+      videoIndex: elt.videoIndex.sort(a, b => a.videoIndex - b.videoIndex),
       apiUrl: reqURL + '/' + elt.videoIndex
     }))
   })
