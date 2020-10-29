@@ -40,7 +40,7 @@ app.get("/secret", (req, res) => {
 app.get('/:videoSeries', async (req, res, next) => {
   const type = req.params.videoSeries
   if (!Object.keys(dyna).includes(type)) next();
-  let reqURL = `${req.protocol}://${req.get('host')}${req.baseUrl}`;
+  let reqURL = `${req.protocol}://${req.get('host')}${req.url}`;
   let videos = Object.values(await getAll(type))
   res.send({
     title: dyna[type].title,
