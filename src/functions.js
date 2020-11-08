@@ -59,10 +59,17 @@ const dyna = {
   },
   ml5: {
     apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_learning/ml5",
-    webURLPre: `${baseURL}/learning/ml5`,
+    webURLPre: `${baseURL}/learning/ml5/`,
     title: "Beginners Guide to Machine Learning in JavaScript",
     description: "ml5.js Beginners Guide",
     ytid: "PLRqwX-V7Uu6YPSwT06y_AEYTqIwbeam3y"
+  },
+  discord: {
+    apiUrl: "https://api.github.com/repos/CodingTrain/website/contents/_learning/bots/discord",
+    webURLPre: `${baseURL}/learning/bots/discord/`,
+    title: "Discord Bot",
+    description: "🤖 How to create a Discord bot with discord.js! 🤖",
+    ytid: "PLRqwX-V7Uu6avBYxeBSwF48YhAnSn_sA4"
   }
 }
 

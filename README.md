@@ -21,6 +21,7 @@ All endpoints are relative to [`https://the-coding-train-api.vercel.app`](https:
 | The Nature of Code                       | `noc`              |
 | Teachable Machine Tutorials              | `teachableMachine` |
 | Beginners Guide to Machine Learning      | `ml5`              |
+| Discord Bot                              | `discord`          |
 | Guest Tutorials                          | `guest`            |
 
 * `/challenge/randomContribution` : Random Contribution for a Coding Challenge
