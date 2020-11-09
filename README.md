@@ -1,5 +1,7 @@
 # The Coding Train API
 
+<img src="https://drive.google.com/uc?export=view&id=1sA7fDyBjA2pmeiiwb9qWGkTRhz6xczli" width="200" alt="Coding Train Character"/>
+
 (Unofficial) API for the Coding Train
 
 Response Type: `application/json`
@@ -8,8 +10,8 @@ Response Type: `application/json`
 
 All endpoints are relative to [`https://the-coding-train-api.vercel.app`](https://the-coding-train-api.vercel.app)
 
-* `/` : Details about the API and other endpoints
-* `/:videoplaylist{/:videoIndex}` : Data about particular playlist (or video)
+* `GET /` : Details about the API and other endpoints
+* `GET /:videoplaylist{/:videoIndex}` : Data about particular playlist (or video)
 
 | Actual Name                              | `videoplalist`     |
 | ---------------------------------------- | ------------------ |
@@ -24,11 +26,11 @@ All endpoints are relative to [`https://the-coding-train-api.vercel.app`](https:
 | Discord Bot                              | `discord`          |
 | Guest Tutorials                          | `guest`            |
 
-* `/challenge/randomContribution` : Random Contribution for a Coding Challenge
-* `/cabana/randomContribution` : Random Contribution for a Coding in the Cabana Video
-* `/p5Tutorial/randomContribution` : Random Contribution based on p5.js Tutorials 
-* `/ml5/randomContribution` : Random Contribution based on ml5.js Tutorials
-* `/noc/randomContribution` : Random Contribution based on The Nature of Code videos
+* `GET /challenge/randomContribution` : Random Contribution for a Coding Challenge
+* `GET /cabana/randomContribution` : Random Contribution for a Coding in the Cabana Video
+* `GET /p5Tutorial/randomContribution` : Random Contribution based on p5.js Tutorials 
+* `GET /ml5/randomContribution` : Random Community Contribution in Machine Learning with ml5.js 
+* `GET /noc/randomContribution` : Random Contribution based on The Nature of Code videos
 
 
 ## Contribution
