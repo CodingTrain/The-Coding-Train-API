@@ -1,6 +1,6 @@
 # The Coding Train API
 
-<img src="https://camo.githubusercontent.com/e883a4d030ab6273d49d284949ef865049fd6457ecba1bba9956ef6699963317/68747470733a2f2f64726976652e676f6f676c652e636f6d2f75633f6578706f72743d766965772669643d31734137664479426a4132706d6569697762397157476b5452687a3678637a6c69" width="200" alt="Coding Train Character"/>
+<img src="https://thecodingtrain.com/assets/images/header-mobile.jpg" alt="Coding Train Logo"/>
 
 A simple Express API for the Video Tutorials on the Coding Train.
 
