@@ -73,6 +73,7 @@ const dyna = {
   }
 }
 
+/** @type {<T>(arr:T[]) => T} */
 const randomArr = arr => arr[Math.floor(Math.random() * arr.length)]
 
 async function getAll(content) {
@@ -97,11 +98,11 @@ async function getAll(content) {
 }
 
 
-async function getOne(content, i) {
-  if (!dyna[content]) throw new Error("Chale " + content)
-  let webURLPre = dyna[content].webURLPre
+async function getOne(type, i) {
+  if (!dyna[type]) throw new Error("Not found " + type)
+  let webURLPre = dyna[type].webURLPre
   try {
-    const all = await getAll(content)
+    const all = await getAll(type)
     let { url } = all[i]
     let { data } = await axios.get(url, {
       // auth: { username: process.env.GITHUB_USERNAME, password: process.env.GITHUB_PASSWORD }
@@ -109,7 +110,22 @@ async function getOne(content, i) {
     let challengeYaml = data.split('---')[1];
     let description = data.split('---').pop();
     let challenge = YAML.parse(challengeYaml)
-    return { ...challenge, description, webURL: `${webURLPre}${url.split("/").pop().slice(0, -2)}html` }
+    const thedata = { ...challenge, description, webURL: `${webURLPre}${url.split("/").pop().slice(0, -2)}html` }
+    const { redirect_from, repository, video_number, links, video_id, can_contribute, videos, web_editor, ...thechallenge } = thedata
+    let contributions;
+    if (thechallenge.contributions) contributions = thechallenge.contributions
+    else if (Math.floor(i) == i) contributions = []
+    else contributions = (await getOne(type, Math.floor(i) + 0.1)).contributions
+    return {
+      ...thechallenge,
+      videoIndex: video_number,
+      referenceLinks: links,
+      referenceVideos: videos,
+      videoID: video_id,
+      webEditor: web_editor,
+      contributions,
+      series: dyna[type].title
+    }
   } catch (e) {
     return "error" + e
   }
@@ -159,4 +175,4 @@ const randomContribution = async (type, baseURL) => {
 }
 
 
-module.exports = { getAll, getOne, getAllData, randomContribution, dyna }
+module.exports = { getAll, getOne, getAllData, randomContribution, dyna, randomArr }

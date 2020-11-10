@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 
-const { getOne, randomContribution, dyna, getAllData, getAll } = require('./functions')
+const { getOne, randomContribution, dyna, getAllData, getAll, randomArr } = require('./functions')
 
 const contributing = [
   "p5Tutorial",
@@ -40,7 +40,7 @@ app.get("/secret", (req, res) => {
 app.get('/:videoSeries', async (req, res, next) => {
   const type = req.params.videoSeries
   if (!Object.keys(dyna).includes(type)) next();
-  let reqURL = `${req.protocol}://${req.get('host')}${req.url}`;
+  let reqURL = `${req.protocol}://${req.get('host')}${req.url.endsWith('/') ? req.url : req.url + '/'}`;
   let videos = Object.values(await getAll(type))
   res.send({
     title: dyna[type].title,
@@ -49,8 +49,10 @@ app.get('/:videoSeries', async (req, res, next) => {
     videos: videos.map(elt => ({
       name: titleCase(elt.name.split('-').join(' ')),
       videoIndex: elt.videoIndex,
-      apiUrl: reqURL + '/' + elt.videoIndex
-    })).sort((a, b) => a.videoIndex - b.videoIndex)
+      apiUrl: reqURL + elt.videoIndex
+    })).sort((a, b) => a.videoIndex - b.videoIndex),
+    randomURL: reqURL + 'random',
+    randomCommunityContributionURL: reqURL + "randomContribution",
   })
 })
 
@@ -64,6 +66,16 @@ app.get('/:resourceType/randomContribution', async (req, res, next) => {
   else next()
 })
 
+app.get('/:resourceType/random', async (req, res, next) => {
+  const type = req.params.resourceType
+  let baseURL = `${req.protocol}://${req.get('host')}`;
+  const data = await getAll(type);
+  let challengeIndex = randomArr(Object.keys(data))
+  const challenge = await getOne(type, challengeIndex)
+  if (typeof challenge == 'object') res.send(challenge)
+  else next()
+})
+
 app.get('/:resourceType/:index', async (req, res, next) => {
   const type = req.params.resourceType
   const i = +req.params.index
@@ -71,23 +83,7 @@ app.get('/:resourceType/:index', async (req, res, next) => {
   if (typeof i !== 'number') next();
   const data = await getOne(type, i)
   if (typeof data !== "object") next()
-  else {
-    const { redirect_from, repository, video_number, links, video_id, can_contribute, videos, web_editor, ...challenge } = data
-    let contributions;
-    if (challenge.contributions) contributions = challenge.contributions
-    else if (Math.floor(i) == i) contributions = []
-    else contributions = (await getOne(type, Math.floor(i) + 0.1)).contributions
-    res.send({
-      ...challenge,
-      videoIndex: video_number,
-      referenceLinks: links,
-      referenceVideos: videos,
-      videoID: video_id,
-      webEditor: web_editor,
-      contributions,
-      series: dyna[type].title
-    })
-  }
+  else res.send(data)
 })
 
 function titleCase(str) {

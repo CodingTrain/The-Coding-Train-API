@@ -12,6 +12,7 @@ All endpoints are relative to [`https://the-coding-train-api.vercel.app`](https:
 
 * `GET /` : Details about the API and other endpoints
 * `GET /:videoplaylist{/:videoIndex}` : Data about particular playlist (or video)
+* `GET /:videoplaylist/random` : Data about a random video in a playlist
 
 | Actual Name                              | `videoplalist` Name |
 | ---------------------------------------- | ------------------- |
