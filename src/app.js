@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
 
-require('dotenv').config();
+const { getVideo, randomContribution, allPlaylists, getAllVideos, randomArr } = require('./functions')
 
 const app = express();
 
@@ -12,80 +12,85 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
+const videoPlaylists = Object.keys(allPlaylists)
 
-const { getOne, randomContribution, dyna, getAllData, getAll, randomArr } = require('./functions')
-
-const contributing = [
-  "p5Tutorial",
+const canContribute = [
   "challenge",
   "cabana",
   "ml5",
   "noc"
 ]
 
+
+// '/' route
 app.get('/', (req, res) => {
-  let reqURL = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+  let reqURL = `${req.protocol}://${req.get('host')}${req.url.endsWith('/') ? req.url : req.url + '/'}`;
   res.send({
     message: "Hello! And Welcome to the Coding Train!",
-    videoSeries: Object.fromEntries(Object.keys(dyna).map(elt =>
-      [dyna[elt].title, reqURL + elt]
+    videoSeries: Object.fromEntries(videoPlaylists.map(elt =>
+      [allPlaylists[elt].title, reqURL + elt]
     ))
   })
 })
 
-app.get("/secret", (req, res) => {
-  res.send("You Found the Secret Route! 🚂🚂")
-})
-
-app.get('/:videoSeries', async (req, res, next) => {
-  const type = req.params.videoSeries
-  if (!Object.keys(dyna).includes(type)) next();
+// '/videoPlaylist' route
+// Possible videoPlaylist are listed in README.md
+app.get('/:videoPlaylist', async (req, res, next) => {
+  const type = req.params.videoPlaylist
+  if (!videoPlaylists.includes(type)) next();
   let reqURL = `${req.protocol}://${req.get('host')}${req.url.endsWith('/') ? req.url : req.url + '/'}`;
-  let videos = Object.values(await getAll(type))
+  let videos = Object.values(await getAllVideos(type))
   res.send({
-    title: dyna[type].title,
-    description: dyna[type].description,
-    playlistID: dyna[type].ytid,
+    title: allPlaylists[type].title,
+    description: allPlaylists[type].description,
+    playlistID: allPlaylists[type].ytid,
     videos: videos.map(elt => ({
       name: titleCase(elt.name.split('-').join(' ')),
       videoIndex: elt.videoIndex,
       apiUrl: reqURL + elt.videoIndex
     })).sort((a, b) => a.videoIndex - b.videoIndex),
-    randomURL: reqURL + 'random',
-    randomCommunityContributionURL: reqURL + "randomContribution",
+    randomVideoURL: reqURL + 'random',
+    randomCommunityContributionURL: canContribute.includes(type) ? reqURL + "randomContribution" : undefined,
   })
 })
 
-
-app.get('/:resourceType/randomContribution', async (req, res, next) => {
-  const type = req.params.resourceType
+// '/videoPlaylist/randomContribution' route
+// Here, possible videoPlaylist would be 'challenge', 'cabana', 'p5Tutorial', 'ml5' and 'noc'
+app.get('/:videoPlaylist/randomContribution', async (req, res, next) => {
+  const type = req.params.videoPlaylist
   let baseURL = `${req.protocol}://${req.get('host')}`;
-  if (!contributing.includes(type)) next();
+  if (!canContribute.includes(type)) next();
   let h = await randomContribution(type, baseURL)
   if (typeof h == 'object') res.send(h)
   else next()
 })
 
-app.get('/:resourceType/random', async (req, res, next) => {
-  const type = req.params.resourceType
-  let baseURL = `${req.protocol}://${req.get('host')}`;
-  const data = await getAll(type);
+// '/videoPlaylist/random' route
+// Get random video from certain playlist
+// Possible videoPlaylist are listed in README.md
+app.get('/:videoPlaylist/random', async (req, res, next) => {
+  const type = req.params.videoPlaylist
+  const data = await getAllVideos(type);
   let challengeIndex = randomArr(Object.keys(data))
-  const challenge = await getOne(type, challengeIndex)
+  const challenge = await getVideo(type, challengeIndex)
   if (typeof challenge == 'object') res.send(challenge)
   else next()
 })
 
-app.get('/:resourceType/:index', async (req, res, next) => {
-  const type = req.params.resourceType
+// 'videoPlaylist/index' route
+// Get specific video from a playlist
+// Index is according to Coding Train Website
+app.get('/:videoPlaylist/:index', async (req, res, next) => {
+  const type = req.params.videoPlaylist
   const i = +req.params.index
-  if (!Object.keys(dyna).includes(type)) next();
+  if (!videoPlaylists.includes(type)) next();
   if (typeof i !== 'number') next();
-  const data = await getOne(type, i)
+  const data = await getVideo(type, i)
   if (typeof data !== "object") next()
   else res.send(data)
 })
 
+// Function That Capitalizes Each Word Of A String
 function titleCase(str) {
   var splitStr = str.toLowerCase().split(' ');
   for (var i = 0; i < splitStr.length; i++) {

@@ -29,9 +29,16 @@ All endpoints are relative to [`https://the-coding-train-api.vercel.app`](https:
 
 * `GET /challenge/randomContribution` : Random Contribution for a Coding Challenge
 * `GET /cabana/randomContribution` : Random Contribution for a Coding in the Cabana Video
-* `GET /p5Tutorial/randomContribution` : Random Contribution based on p5.js Tutorials 
 * `GET /ml5/randomContribution` : Random Community Contribution in Machine Learning with ml5.js 
 * `GET /noc/randomContribution` : Random Contribution based on The Nature of Code videos
+
+### Example Testing Routes
+**Open these links in the browser to test**
+* https://the-coding-train-api.vercel.app/challenge/random : Get details about a Random Coding Challenge Video
+* https://the-coding-train-api.vercel.app/discord : Get details about the Discord Bot Tutorial Series
+* https://the-coding-train-api.vercel.app/challenge/randomContribution : Get a random Community Contribution on a Coding Challenge Video
+* * https://the-coding-train-api.vercel.app/cabana/randomContribution : Get a random Community Contribution on a Coding in the Cabana Video
+
 
 ## Usage
 
